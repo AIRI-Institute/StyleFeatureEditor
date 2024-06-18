@@ -232,7 +232,7 @@ If you are using W&B, it is better to pass `train.start_step` according to the l
 * Training stage 1
 
 <p align="center">
-  <img src="assets/phase1.png" width="100%"/>
+  <img src="https://github.com/AIRI-Institute/StyleFeatureEditor/blob/main/assets/phase1.png" width="100%"/>
   <br>
 <b>The Inverter training pipeline.</b> Input image $X$ is passed to Feature-Style-like backbone that predicts $w \in W^+$ and $F_{pred} \in \mathcal{F}_k$. Then $F_w = G(w_{0:k})$ is synthesized and passed with $F_{pred}$ to the Fuser that predicts $F_k$. Inversion $\widehat{X} = G(F_k, w_{k+1:N})$ is generated. Additional reconstruction $\widehat{X}_w = G(w_{0:N})$ is synthesized from w-latents only. Loss is calculated for pairs $(X, \widehat{X})$ and $(X, \widehat{X}_w)$
 </p>
@@ -240,7 +240,7 @@ If you are using W&B, it is better to pass `train.start_step` according to the l
 * Training stage 2 and Inference
 
 <p align="center">
-  <img src="assets/phase2.png" width="100%"/>
+  <img src="https://github.com/AIRI-Institute/StyleFeatureEditor/blob/main/assets/phase2.png" width="100%"/>
   <br>
 <b>The Feature Editor training pipeline and inference.</b> To obtain <b>editing loss</b>, one need to synthesize training samples: $X_{E}$ -- training input, and $X_{E}'$  -- training target. The pre-trained encoder $E$ takes the real image $X$ and predicts $w_{E} \in W^+$. Edited direction $d \in \mathcal{D}$ is randomly sampled, after which $w_E$ is edited to $w_E' = w_E + d$. Image $X_{E}$ and intermediate features $F_{w_{E}}$ are synthesized from $w_{E}$, while $X_{E}'$ and $F_{w_{E}'}$ are synthesized from $w_{E}'$ via generator $G$. $X_{E}$ is used as input and passed to frozen Inverter $I$ that predicts $F_k$ and $w$ that is edited to $w'$ according sampled $d$. Then $\Delta$ is calculated, and Feature Editor $H$ edits $F_k$ according $\Delta$. The edited reconstruction $\widehat{X}_{E}'$ is synthesized from $F_k'$ and $w_{k+1:N}'$. <b>Editing loss </b> is calculated between $X_{E}'$ and $\widehat{X}_{E}'$. To obtain the <b>inversion loss</b>, the real image $X$ is passed to $I$ that predicts $w$ and $F_k$, $F_k$ is edited to $F_k'$ by $H$ with $\Delta = 0$. The inversion $\widehat{X}$ is synthesized from $F_k'$ and $w_{k+1:N}$. The Inversion loss is calculated between $X$ and $\widehat{X}$. <b>Inference pipeline </b> is the same as synthesizing $\widehat{X}_{E}'$ but with the assumption that $I$ takes real image $X$ instead of $X_E$.
 </p>
