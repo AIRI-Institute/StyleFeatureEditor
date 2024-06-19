@@ -1,7 +1,7 @@
 gdown==4.7.1
 wandb==0.15.2
 omegaconf==2.1.2
-tqdm==4.66.2
+tqdm==4.66.3
 Pillow==10.3.0
 pytorch_fid==0.3.0
 piq==0.8.0
@@ -11,3 +11,6 @@ einops==0.7.0
 scipy==1.10.1
 clip @ git+https://github.com/openai/CLIP.git@a1d071733d7111c9c014f024669f959182114e33
 pyfacer==0.0.4
+timm==1.0.3
+dlib==19.24.4
+pandas==2.2.2

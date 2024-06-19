@@ -20,6 +20,7 @@ SFE is able to edit a real face image with the desired editing. It first reconst
 ### Prerequisites
 - Linux or macOS
 - NVIDIA GPU + CUDA CuDNN 
+- CMAKE
 - Python 3.10
 
 ### Installation
@@ -32,7 +33,7 @@ cd StyleFeatureEditor
 
 * Install the environment:
 
-**Step 1 [recommended]**, create new [conda](https://docs.anaconda.com/anaconda/install/) environment:
+**Step 1**, create new [conda](https://docs.anaconda.com/anaconda/install/) environment:
 ```bash
 conda create -n sfe python=3.10 -y
 source deactivate
@@ -73,7 +74,7 @@ If you need to edit single or several images, you can use `SimpleRunner` from [r
 from runners.simple_runner import SimpleRunner
 
 runner = SimpleRunner(
-    editor_ckpt_pth="pretrained_models/editor_ckpt.pt"
+    editor_ckpt_pth="pretrained_models/sfe_editor.pt"
 )
 
 # Inference
