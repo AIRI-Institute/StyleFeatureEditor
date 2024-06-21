@@ -48,31 +48,14 @@ FACE_DIRECTIONS = {
     "bobcut": [0.07, 0.12, 0.18],
     "bowlcut": [0.07, 0.14],
     "mohawk": [0.07, 0.10],
-    "blond hair ": [-8, -4, 4, 8],
+    "blond hair": [-8, -4, 4, 8],
     "fs_smiling": [-6, -3, 3, 6, 9]
 }
-
-
-CAR_DIRECTIONS = {
-    "cube": [-15, -9, 9, 15],
-    "grass": [-25, -20],
-    "color": [-15, -9, 9, 15],
-    "trees": [-15, -12, 12, 15],
-    "hubcap": [-5, -3.5, -2, 2, 3.5, 5],
-    "car color": [9, 12, 15],
-    "headlights": [-11, -8, 8, 11]
-}
-
 
 
 def get_random_edit():
     direction = np.random.choice(list(FACE_DIRECTIONS.keys()))
     strenght = np.random.choice(FACE_DIRECTIONS[direction])
-    return direction, strenght
-        
-def get_random_car_edit():
-    direction = np.random.choice(list(CAR_DIRECTIONS.keys()))
-    strenght = np.random.choice(CAR_DIRECTIONS[direction])
     return direction, strenght
         
 

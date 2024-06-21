@@ -154,6 +154,7 @@ class SimpleRunner:
 
         edited_image = tensor2im(edited_image[0][0].cpu())
         edited_image.save(save_pth)
+        return edited_image
 
     def available_editings(self):
         edits_types = []

@@ -1,59 +1,57 @@
-direction method\name	|    direction effect during positive edit 		  |   approximate direction power range  
-						|    (during negative edit effect is reversed)	  |   to editing works well (found empirically)
+direction method\name   |    direction effect   | approximate direction |  additional comments
+                        |  during positive edit |     power range to    |       
+                        | (during negative edit |   editing works well  |
+                        |  effect is reversed)  |  (found empirically)  |
 
 
 fs_directions:
-	fs_glasses			|    add glasses	|   [-20; 30]   | may open mouth 
-	fs_smiling			|     add smile		|   [-10; 10]
-	fs_makeup			|    add make-up 	|   [-10; 15]   | bad works with men
+    fs_glasses          |      add glasses      |   [-20; 30]   | may open mouth 
+    fs_smiling          |       add smile       |   [-10; 10]
+    fs_makeup           |      add make-up      |   [-10; 15]   | bad works with men
 
 ganspace_directions:
-	eye_openness		|    close  eyes    |   [-30; 45]
-	trimmed_beard		|    remove beard   |   [-30; 30]   | bad works with women
-	lipstick			|    add lipstick   |   [-30; 30]   | bad works with men
-	face_roundness		| make face rounder |   [-20; 15]
-	nose_length			| decreace nose len |   [-30; 30]   | may open mouth 
-	eyebrow_thickness   | decreace eyebrow  |   [-20; 20]   
-						|     thickness     |
-	head_angle_up		|       ???		    |       -       | works very wierd...
-	displeased			|    add sadness    |   [-10; 10]	
+    eye_openness        |      close  eyes      |   [-30; 45]
+    trimmed_beard       |      remove beard     |   [-30; 30]   | bad works with women
+    lipstick            |      add lipstick     |   [-30; 30]   | bad works with men
+    face_roundness      |   make face rounder   |   [-20; 15]
+    nose_length         | decreace nose length  |   [-30; 30]   | may open mouth 
+    eyebrow_thickness   |   decreace eyebrow    |   [-20; 20]   
+                        |       thickness       |
+    displeased          |      add sadness      |   [-10; 10]    
 
 interfacegan_directions:
-	age  				|   increase age    |   [-10; 10]	
-	smile				|    add smile 		|   [-5 ; 5 ]   | may cause hair artefacts
-	rotation            |     turn  face    |   [-7 ; 7 ]      
-	                    |    to the right   |
+    age                 |      increase age     |   [-10; 10]    
+    smile               |       add smile       |   [-5 ; 5 ]   | may cause hair artefacts, better use fs_smiling
+    rotation            |    turn  face right   |   [-7 ; 7 ]      
 
 styleclip_directions:
-	afro				|   afro hairstyle  |   [0; 0.14]
-	angry				|    make  angrier  |   [0; 0.14]   | cause background artefacts
-	bobcut				|  bobcut hairstyle |   [0; 0.18]   | cause background artefacts
-	bowlcut				|  bowlcut h. style |   [0; 0.14]   | cause background artefacts
-	mohawk				|  mohawk hairstyle |   [0; 0.10]   | cause background artefacts
-	curly_hair			|      add curls    |   [0; 0.12]
-	purple_hair			|  dye hair purple  |   [0; 0.12]
-	surprised			|     make  more    |   [0; 0.10]
-						|	  surprised		|
-	beyonce				| make similar to _ |   [0; 0.12]
-	hilary_clinton		| make similar to _ |   [0; 0.10]
-	depp				| make similar to _ |   [0; 0.12]   
-	taylor_swift		| make similar to _ |   [0; 0.10]
-	trump				| make similar to _ |   [0; 0.10]
-	zuckerberg			| make similar to _ |   [0; 0.10]
+    afro                |     afro hairstyle    |   [0; 0.14]
+    angry               |      make  angrier    |   [0; 0.14]   | cause background artefacts
+    bobcut              |    bobcut hairstyle   |   [0; 0.18]   | cause background artefacts
+    bowlcut             |    bowlcut h. style   |   [0; 0.14]   | cause background artefacts
+    mohawk              |    mohawk hairstyle   |   [0; 0.10]   | cause background artefacts
+    curly_hair          |        add curls      |   [0; 0.12]
+    purple_hair         |    dye hair purple    |   [0; 0.12]
+    surprised           |  make  more surprised |   [0; 0.10]
+    beyonce             |  make similar to ...  |   [0; 0.12]
+    hilary_clinton      |  make similar to ...  |   [0; 0.10]
+    depp                |  make similar to ...  |   [0; 0.12]   
+    taylor_swift        |  make similar to ...  |   [0; 0.10]
+    trump               |  make similar to ...  |   [0; 0.10]
+    zuckerberg          |  make similar to ...  |   [0; 0.10]
 
 stylespace_directions:
-	black hair   		|    darken  hair   |   [-7; 10]
-	blond hair  		|    darken  hair   |   [-10; 7]    | yes, positive darkens hair
-	grey hair    		| make hair colored |   [-7 ; 7]    | negative means make hair grey
-	wavy hair    		|  add hair length  |   [-7 ; 7]
-	bangs  				|      add bangs?   |   [-7 ; 7]    | works wierd
-	receding hairline 	|     remove bald   |   [-10; 10]
-	smiling 			|    remove smile	|   [-10; 10]
-	sideburns 			|  remove sideburns |   [-7 ; 7]    | bad works with women
-	goatee 				|   remove goatee   |   [-7 ; 7]    | bad works with women
-	earrings			|    add earrings   |   [0 ; 15]    | bad works with men
-	glasses 			|   remove glasses	|   [-10; 10]   
-	gender  			|   add femininity  |   [-10; 7]    | better use global mapper
+    black hair          |      darken  hair     |   [-7; 10]
+    blond hair          |      darken  hair     |   [-10; 7]    | yes, positive power darkens hair
+    grey hair           |   make hair colored   |   [-7 ; 7]    | negative means make hair grey
+    wavy hair           |    add hair length    |   [-7 ; 7]
+    receding hairline   |       remove bald     |   [-10; 10]
+    smiling             |      remove smile     |   [-10; 10]   | better use fs_smiling
+    sideburns           |    remove sideburns   |   [-7 ; 7]    | bad works with women
+    goatee              |     remove goatee     |   [-7 ; 7]    | bad works with women
+    earrings            |      add earrings     |   [0 ; 15]    | bad works with men
+    glasses             |     remove glasses    |   [-10; 10]   
+    gender              |     add femininity    |   [-10; 7]    | better use global mapper
 
 You can alse use directions from text prompts via StyleClip Global Mapper (https://arxiv.org/abs/2103.17249).
 Such directions look as follows: "styleclip_global_{neutral prompt}_{target prompt}_{disentanglement}" where

@@ -25,7 +25,7 @@ def inferece_fid_editing(opts):
         attr_name,
         transform, 
         opts.celeba_attr_table_pth, 
-        use_attr=opts.is_attr_added
+        use_attr=not opts.attr_is_reversed
     )
 
     not_attr_dataset = CelebaAttributeDataset(
@@ -33,7 +33,7 @@ def inferece_fid_editing(opts):
         attr_name,
         transform, 
         opts.celeba_attr_table_pth, 
-        use_attr=not opts.is_attr_added
+        use_attr=opts.attr_is_reversed
         )
 
     print(f"Percent of Images of attribute {opts.attr_name} is "
@@ -75,13 +75,13 @@ if __name__ == "__main__":
         help="Name of Celeba attribute that is added during editing.",
     )
     parser.add_argument(
-        "--is_attr_added",
-        type=bool,
-        default=True,
-        help="False means that attribute was not added but removed during editing",
+        "--attr_is_reversed",
+        action='store_true',
+        help="Means that attribute was not added but removed during editing",
     )
     parser.add_argument(
         "--celeba_attr_table_pth",
+        default="CelebAMask-HQ-attribute-anno.txt",
         type=str,
         help="Path to celeba attributes .txt",
     )

@@ -179,7 +179,7 @@ python scripts/fid_calculation.py \
     --attr_name=Eyeglasses 
 ```
 
-Attribute name should be one of the names listed in the [CelebAMask-HQ-attribute-anno.txt](CelebAMask-HQ-attribute-anno.txt). If the selected attribute was not added but removed during editing, pass `--attr_is_reversed' flag.
+Attribute name should be one of the names listed in the [CelebAMask-HQ-attribute-anno.txt](CelebAMask-HQ-attribute-anno.txt). If the selected attribute was not added but removed during editing, pass `--attr_is_reversed` flag.
 
 ## Training
 ### Configs
@@ -215,10 +215,10 @@ python3 scripts/train.py \
 This stage is related to training Feature Editor. To start stage use:
 
 ```
-python3 scripts/train.py \ 
-    exp.config_dir=configs \ 
-    exp.config=fse_editor_train.yaml \ 
-    exp.name=fse_editor_train \ 
+python3 scripts/train.py \
+    exp.config_dir=configs \
+    exp.config=fse_editor_train.yaml \
+    exp.name=fse_editor_train \
     methods_args.fse_full.inverter_pth=path/to/trained/inverter.pt \
     data.input_train_dir=path/to/train/images \
     data.input_val_dir=path/to/validation/images \
