@@ -14,7 +14,7 @@ setup_seed(777)
 
 def run(opts):
     runner = SimpleRunner(
-        editor_ckpt_pth="pretrained_models/sfe_editor.pt",
+        editor_ckpt_pth="pretrained_models/sfe_editor_light.pt",
     )
 
     runner.edit(

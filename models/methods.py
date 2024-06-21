@@ -63,17 +63,24 @@ class FSEFull(nn.Module):
         self.discriminator.load_state_dict(D_original.state_dict())
         self.discriminator.to(self.device)
 
+    def load_disc_from_ckpt(self, ckpt):
+        unique_keys = set(key.split(".")[0] for key in ckpt["state_dict"].keys())
+        if "discriminator" in unique_keys:
+            self.discriminator.load_state_dict(get_keys(ckpt, "discriminator"), strict=True)
+        else:
+            print("Can not find Discriminator weights in checkpoint, leave default weights.")
+
     def load_weights(self):
         if self.opts.checkpoint_path != "":
             print(f"Loading from checkpoint: {self.opts.checkpoint_path}")
             ckpt = torch.load(self.opts.checkpoint_path, map_location="cpu")
-            self.discriminator.load_state_dict(get_keys(ckpt, "discriminator"), strict=True)
+            self.load_disc_from_ckpt(ckpt)
             self.encoder.load_state_dict(get_keys(ckpt, "encoder"), strict=True)
             self.inverter.load_state_dict(get_keys(ckpt, "inverter"), strict=True)
         else:
             print(f"Loading Discriminator and Inverter from Inverter checkpoint: {self.inverter_pth}")
             ckpt = torch.load(self.inverter_pth, map_location="cpu")
-            self.discriminator.load_state_dict(get_keys(ckpt, "discriminator"), strict=True)
+            self.load_disc_from_ckpt(ckpt)
             self.inverter.load_state_dict(get_keys(ckpt, "encoder"), strict=True)
 
         self.inverter = self.inverter.eval().to(self.device)
@@ -180,12 +187,18 @@ class FSEInverter(nn.Module):
         self.discriminator.load_state_dict(D_original.state_dict())
         self.discriminator.to(self.device)
 
+    def load_disc_from_ckpt(self, ckpt):
+        unique_keys = set(key.split(".")[0] for key in ckpt["state_dict"].keys())
+        if "discriminator" in unique_keys:
+            self.discriminator.load_state_dict(get_keys(ckpt, "discriminator"), strict=True)
+        else:
+            print("Can not find Discriminator weights in checkpoint, leave default weights.")
 
     def load_weights(self):
         if self.opts.checkpoint_path != "":
             print("Loading  from checkpoint: {}".format(self.opts.checkpoint_path))
             ckpt = torch.load(self.opts.checkpoint_path, map_location="cpu")
-            self.discriminator.load_state_dict(get_keys(ckpt, "discriminator"), strict=True)
+            self.load_disc_from_ckpt(ckpt)
             self.encoder.load_state_dict(get_keys(ckpt, "encoder"), strict=True)
 
         print("Loading decoder from", self.opts.stylegan_weights)

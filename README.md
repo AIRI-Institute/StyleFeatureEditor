@@ -55,6 +55,15 @@ rm -rf StyleFeatureEditor
 
 By default, we assume that all auxiliary models are downloaded and saved to the directory `pretrained_models`. However, you can use your own paths by changing the necessary values in [configs/paths.py](configs/paths.py). 
 
+* Download full weights [optional]:
+  
+Weights of Inverter (result of 1 phase) and and Feature Editor (result of 2 phase) stored in `pretrained_models/sfe_inverter_light.pt` and `pretrained_models/sfe_editor_light.pt` respectively. If you need full checkpoints including weights of all parts of our pipeline (discriminator, optimisers, etc.), you can download them manually from Google Drive:
+
+| Path | Description
+| :--- | :----------
+|[SFE Editor](https://drive.google.com/file/d/1D2BfXLCMotRtfbDFrmBh0faRUGSiHz2u/view?usp=sharing)  | SFE trained both phases on FFHQ dataset.
+|[SFE Inverter](https://drive.google.com/file/d/1dIqojAnHdk4a__C2s8oOtu4_Y_8e85DM/view?usp=sharing) | SFE Inverter trained on FFHQ dataset first phase only.
+
 
 ## Inference
 
@@ -74,7 +83,7 @@ If you need to edit single or several images, you can use `SimpleRunner` from [r
 from runners.simple_runner import SimpleRunner
 
 runner = SimpleRunner(
-    editor_ckpt_pth="pretrained_models/sfe_editor.pt"
+    editor_ckpt_pth="pretrained_models/sfe_editor_light.pt"
 )
 
 # Inference
