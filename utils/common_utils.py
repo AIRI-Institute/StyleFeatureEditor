@@ -4,6 +4,13 @@ from torch.nn import functional as F
 from PIL import Image
 
 
+class AlignerCantFindFaceError(Exception):
+    pass
+
+class MaskerCantFindFaceError(Exception):
+    pass
+
+
 def tensor2im(var):
     var = var.cpu().detach().transpose(0, 2).transpose(0, 1).numpy()
     var = (var + 1) / 2

@@ -14,6 +14,7 @@ requirements:
     # http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
 """
 from argparse import ArgumentParser
+from utils.common_utils import AlignerCantFindFaceError
 import time
 import numpy as np
 import PIL
@@ -37,13 +38,12 @@ def get_landmark(filepath, predictor):
     img = dlib.load_rgb_image(filepath)
     dets = detector(img, 1)
 
+    if len(dets) < 1:
+        raise AlignerCantFindFaceError("Face parser can not find face in your image :c Try to upload another one.")
+
     print(f"Found {len(dets)} faces, getting the largest")
     dets = sorted(dets, key=lambda det: det.width() * det.height(), reverse=True)
     shape = predictor(img, dets[0])
-
-    # for k, d in enumerate(dets):
-    #     shape = predictor(img, d)
-    #     break
 
     t = list(shape.parts())
     a = []

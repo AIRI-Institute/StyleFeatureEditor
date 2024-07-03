@@ -8,7 +8,7 @@ from PIL import Image
 from pathlib import Path
 
 from omegaconf import OmegaConf
-from utils.common_utils import tensor2im, tensor2im_no_tfm
+from utils.common_utils import tensor2im, tensor2im_no_tfm, MaskerCantFindFaceError
 from datasets.transforms import transforms_registry
 from runners.inference_runners import FSEInferenceRunner
 
@@ -27,14 +27,14 @@ def extract_mask(image_path, save_dir_path, trash=0.995):
 
     with torch.inference_mode():
         # try to find trashhlod for detecting face
-        for detector_trash in [0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]:
+        for detector_trash in [0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.01]:
             masker = Masker(trash=detector_trash)
             faces = masker.face_detector(orig_img_tensor)
             if len(faces['image_ids']) != 0:
                 break
 
         if len(faces['image_ids']) == 0:
-            raise ValueError("Masker's face detector can't find face on your image :c Maybe you forgot to align it?")
+            raise MaskerCantFindFaceError("Masker's face detector can't find face in your image 😢")
         faces = masker.face_parser(orig_img_tensor, faces)
 
 
