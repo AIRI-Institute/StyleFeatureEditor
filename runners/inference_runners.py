@@ -119,7 +119,8 @@ class FSEInferenceRunner(BaseInferenceRunner):
             "latents": w_recon, 
             "fused_feat": fused_feat, 
             "predicted_feat": predicted_feat, 
-            "w_e4e": w_e4e
+            "w_e4e": w_e4e,
+            "inputs": inputs
         }
         
         return images, result_batch
@@ -131,12 +132,18 @@ class FSEInferenceRunner(BaseInferenceRunner):
 
         for i, latent in enumerate(orig_latents):
             edited_latents = self.get_edited_latent(
-                latent.unsqueeze(0), editing_name, editing_degrees
+                latent.unsqueeze(0), 
+                editing_name, 
+                editing_degrees, 
+                method_res_batch["inputs"][i].unsqueeze(0)
             )
             
             w_e4e = method_res_batch["w_e4e"][i].unsqueeze(0)
             edited_w_e4e = self.get_edited_latent(
-                w_e4e, editing_name, editing_degrees
+                w_e4e, 
+                editing_name, 
+                editing_degrees, 
+                method_res_batch["inputs"][i].unsqueeze(0)
             )
 
             if edited_latents is None or edited_w_e4e is None:
@@ -209,7 +216,8 @@ class FSEInverterInferenceRunner(BaseInferenceRunner):
         result_batch = {
             "latents": w_recon, 
             "fused_feat": fused_feat, 
-            "predicted_feat": predicted_feat
+            "predicted_feat": predicted_feat,
+            "inputs": inputs
         }
         
         return images, result_batch
@@ -221,7 +229,10 @@ class FSEInverterInferenceRunner(BaseInferenceRunner):
 
         for i, latent in enumerate(orig_latents):
             edited_latents = self.get_edited_latent(
-                latent.unsqueeze(0), editing_name, editing_degrees
+                latent.unsqueeze(0), 
+                editing_name, 
+                editing_degrees, 
+                method_res_batch["inputs"][i].unsqueeze(0)
             )
 
             if edited_latents is None:

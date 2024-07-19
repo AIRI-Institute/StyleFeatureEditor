@@ -8,6 +8,7 @@ import numpy as np
 from editings import ganspace
 from editings.styleclip.mapper.styleclip_mapper import StyleCLIPMapper
 from editings.styleclip.mapper.gloabl_mapper import StyleCLIPGlobalDirection
+from editings.deltaedit.editor import DeltaEditor
 
 
 STYLESPACE_IDX = [
@@ -118,6 +119,8 @@ class LatentEditor:
                 "fs_makeup": "editings/bound/Heavy_Makeup_boundary.npy"
              }
 
+            self.deltaedit_editor = DeltaEditor()
+
         elif self.domain == "car":
 
             self.stylespace_directions = {
@@ -210,6 +213,23 @@ class LatentEditor:
         for orig, edit in zip(start_rgb, edits_rgb):
             edited_rgb.append(orig.repeat(len(factors), 1) + edit * factors.repeat(1, orig.size(1)) / 1.5)
  
+
+        return edited_ss, edited_rgb
+
+    def get_deltaedit_edits(self, start_s, factors, direction, original_image):
+        latents_to_display = []
+
+        neutral_text, target_text, disentanglement = direction.split("_")
+        disentanglement = float(disentanglement)
+
+        factors = torch.tensor(factors).cuda().view(-1, 1)
+        srart_ss, edited_rgb = start_s
+        edits_ss = self.deltaedit_editor.get_delta_s(neutral_text, target_text, disentanglement, original_image, srart_ss)
+
+        edited_rgb = edited_rgb
+        edited_ss = []
+        for orig, edit in zip(srart_ss, edits_ss):
+            edited_ss.append(orig.repeat(len(factors), 1) + edit * factors.repeat(1, orig.size(1)))
 
         return edited_ss, edited_rgb
 

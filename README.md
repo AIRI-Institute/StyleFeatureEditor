@@ -15,6 +15,10 @@
 SFE is able to edit a real face image with the desired editing. It first reconstructs (inverts) the original image and then edits it according to the chosen direction. On the left is an examples of how our method works for several directions with different editing power p. On the right we display a comparison with previous approaches. LPIPS (lower is better) indicates inversion quality, while FID (lower is better) indicates editing ability. The size of markers indicates the inference time of the method, with larger markers indicating a higher time.
 </p>
 
+## Updates
+**`18.06.2024`**: StyleFeatureEditor release  
+**`15.07.2024`**: Add gradio demo  
+**`20.07.2024`**: Add DeltaEdit editings 
   
   
 ## Getting Started

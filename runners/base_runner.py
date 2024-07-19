@@ -24,7 +24,7 @@ class BaseRunner:
         self._setup_latent_editor()
         self._setup_method()
 
-    def get_edited_latent(self, original_latent, editing_name, editing_degrees):
+    def get_edited_latent(self, original_latent, editing_name, editing_degrees, original_image=None):
         if editing_name in self.latent_editor.stylespace_directions:
             stylespace_latent = get_stylespace_from_w(original_latent, self.method.decoder)
             edited_latents = (
@@ -57,6 +57,13 @@ class BaseRunner:
             edited_latents = (
                 self.latent_editor.get_styleclip_global_edits(
                     stylespace_latent, editing_degrees, editing_name.replace("styleclip_global_", "")
+                ))
+        elif editing_name.startswith("deltaedit_"):
+            assert original_image is not None
+            stylespace_latent = get_stylespace_from_w(original_latent, self.method.decoder)
+            edited_latents = (
+                self.latent_editor.get_deltaedit_edits(
+                    stylespace_latent, editing_degrees, editing_name.replace("deltaedit_", ""), original_image
                 ))
         else:
             raise ValueError(f'Edit name {editing_name} is not available')
