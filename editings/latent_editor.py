@@ -226,7 +226,7 @@ class LatentEditor:
         srart_ss, edited_rgb = start_s
         edits_ss = self.deltaedit_editor.get_delta_s(neutral_text, target_text, disentanglement, original_image, srart_ss)
 
-        edited_rgb = edited_rgb
+        edited_rgb = [latent.repeat(len(factors), 1) for latent in edited_rgb]
         edited_ss = []
         for orig, edit in zip(srart_ss, edits_ss):
             edited_ss.append(orig.repeat(len(factors), 1) + edit * factors.repeat(1, orig.size(1)))
