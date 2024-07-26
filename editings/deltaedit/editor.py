@@ -47,7 +47,7 @@ class DeltaEditor:
             dt = dt / dt.norm(dim=-1, keepdim=True).float().clamp(min=1e-5)
 
             img_gen_for_clip = self.avg_pool(orig_image)
-            c_latents = self.clip_model.encode_image(img_gen_for_clip)
+            c_latents = self.clip_model.encode_image(img_gen_for_clip.cuda())
             c_latents = c_latents / c_latents.norm(dim=-1, keepdim=True).float()
 
             delta_c = torch.cat((c_latents, dt.unsqueeze(0)), dim=1)

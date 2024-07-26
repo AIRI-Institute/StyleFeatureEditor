@@ -120,7 +120,7 @@ class FSEInferenceRunner(BaseInferenceRunner):
             "fused_feat": fused_feat, 
             "predicted_feat": predicted_feat, 
             "w_e4e": w_e4e,
-            "inputs": inputs
+            "inputs": inputs.cpu()
         }
         
         return images, result_batch
@@ -217,7 +217,7 @@ class FSEInverterInferenceRunner(BaseInferenceRunner):
             "latents": w_recon, 
             "fused_feat": fused_feat, 
             "predicted_feat": predicted_feat,
-            "inputs": inputs
+            "inputs": inputs.cpu()
         }
         
         return images, result_batch
