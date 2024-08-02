@@ -19,7 +19,7 @@ SFE is able to edit a real face image with the desired editing. It first reconst
 **`18.06.2024`**: StyleFeatureEditor release  
 **`15.07.2024`**: Add gradio demo  
 **`20.07.2024`**: Add DeltaEdit editings  
-**`20.07.2024`**: Add image unalignment
+**`02.08.2024`**: Add image unalignment
   
   
 ## Getting Started
