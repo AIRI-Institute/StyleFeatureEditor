@@ -58,7 +58,7 @@ def align_face(filepath, predictor):
     :param filepath: str
     :return: PIL Image
     """
-
+    unalign_dict = {}
     lm = get_landmark(filepath, predictor)
 
     lm_chin = lm[0: 17]  # left-right
@@ -92,6 +92,7 @@ def align_face(filepath, predictor):
 
     # read image
     img = PIL.Image.open(filepath)
+    unalign_dict["orig_size"] = img.size
 
     output_size = 1024
     transform_size = 1024
@@ -101,6 +102,7 @@ def align_face(filepath, predictor):
     shrink = int(np.floor(qsize / output_size * 0.5))
     if shrink > 1:
         rsize = (int(np.rint(float(img.size[0]) / shrink)), int(np.rint(float(img.size[1]) / shrink)))
+        unalign_dict["shrink"] = rsize
         img = img.resize(rsize, PIL.Image.ANTIALIAS)
         quad /= shrink
         qsize /= shrink
@@ -112,6 +114,7 @@ def align_face(filepath, predictor):
     crop = (max(crop[0] - border, 0), max(crop[1] - border, 0), min(crop[2] + border, img.size[0]),
             min(crop[3] + border, img.size[1]))
     if crop[2] - crop[0] < img.size[0] or crop[3] - crop[1] < img.size[1]:
+        unalign_dict["crop"] = crop
         img = img.crop(crop)
         quad -= crop[0:2]
 
@@ -122,24 +125,34 @@ def align_face(filepath, predictor):
            max(pad[3] - img.size[1] + border, 0))
     if enable_padding and max(pad) > border - 4:
         pad = np.maximum(pad, int(np.rint(qsize * 0.3)))
+        unalign_dict["pad"] = pad
         img = np.pad(np.float32(img), ((pad[1], pad[3]), (pad[0], pad[2]), (0, 0)), 'reflect')
         h, w, _ = img.shape
         y, x, _ = np.ogrid[:h, :w, :1]
         mask = np.maximum(1.0 - np.minimum(np.float32(x) / pad[0], np.float32(w - 1 - x) / pad[2]),
                           1.0 - np.minimum(np.float32(y) / pad[1], np.float32(h - 1 - y) / pad[3]))
         blur = qsize * 0.02
-        img += (scipy.ndimage.gaussian_filter(img, [blur, blur, 0]) - img) * np.clip(mask * 3.0 + 1.0, 0.0, 1.0)
-        img += (np.median(img, axis=(0, 1)) - img) * np.clip(mask, 0.0, 1.0)
+
+        blur1 = (scipy.ndimage.gaussian_filter(img, [blur, blur, 0]) - img) * np.clip(mask * 3.0 + 1.0, 0.0, 1.0)
+        img += blur1
+        unalign_dict["blur1"] = blur1
+
+        blur2 = (np.median(img, axis=(0, 1)) - img) * np.clip(mask, 0.0, 1.0)
+        img += blur2
+        unalign_dict["blur2"] = blur2
+
         img = PIL.Image.fromarray(np.uint8(np.clip(np.rint(img), 0, 255)), 'RGB')
         quad += pad[:2]
 
     # Transform.
+    unalign_dict["pretrans_size"] = img.size
+    unalign_dict["quad"] = quad
     img = img.transform((transform_size, transform_size), PIL.Image.QUAD, (quad + 0.5).flatten(), PIL.Image.BILINEAR)
     if output_size < transform_size:
         img = img.resize((output_size, output_size), PIL.Image.ANTIALIAS)
 
     # Save aligned image.
-    return img
+    return img, unalign_dict
 
 
 def chunks(lst, n):

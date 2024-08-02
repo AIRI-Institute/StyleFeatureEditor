@@ -18,7 +18,8 @@ SFE is able to edit a real face image with the desired editing. It first reconst
 ## Updates
 **`18.06.2024`**: StyleFeatureEditor release  
 **`15.07.2024`**: Add gradio demo  
-**`20.07.2024`**: Add DeltaEdit editings 
+**`20.07.2024`**: Add DeltaEdit editings
+**`20.07.2024`**: Add image unalignment
   
   
 ## Getting Started
@@ -105,9 +106,9 @@ You can find all available directions in [available_directions.txt](available_di
 ```python
 print(runner.available_editings())
 ``` 
-* Aligning
+* Alignment
 
-If you want to edit raw image do not forget to align it and resize it to 1024 x 1024 by passing `align=True` to `runner.edit(...)`.
+If you want to edit raw image, do not forget to align it and resize it to 1024 x 1024 by passing `align=True` to `runner.edit(...)`. Alignment means that the face is cropped from the original image. If you are using SimpleRunner, the edited image is automatically inserted into the original one, and can be found in the `save_pth` parent directory with postscript `"_unaligned"`.
 
 * Masking
 

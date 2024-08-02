@@ -1,5 +1,8 @@
 import os
+import cv2
+import PIL
 import torch
+import subprocess
 import numpy as np
 import torch.nn.functional as F
 import torchvision.transforms as transforms
@@ -64,8 +67,48 @@ def run_alignment(image_path):
   from scripts.align_all_parallel import align_face
 
   predictor = dlib.shape_predictor("pretrained_models/shape_predictor_68_face_landmarks.dat")
-  aligned_image = align_face(filepath=image_path, predictor=predictor)
-  return aligned_image
+  aligned_image, unalign_dict = align_face(filepath=image_path, predictor=predictor)
+  return aligned_image, unalign_dict
+
+
+def unalign(edited_image, unalign_dict, orig_img_pth, unaligned_path):
+    quad = unalign_dict["quad"]
+    source_quad = [(0, 0), (1024, 0),  (1024, 1024), (0, 1024)]
+    dest_quad = np.array([quad[3], quad[0], quad[1], quad[2]])
+    M = cv2.getPerspectiveTransform(dest_quad.astype(np.float32), np.array(source_quad).astype(np.float32))
+    unaligned = edited_image.transpose(PIL.Image.FLIP_LEFT_RIGHT).transform(unalign_dict["pretrans_size"], PIL.Image.PERSPECTIVE, M.reshape(-1), PIL.Image.BILINEAR)
+
+    mask = np.asarray(unaligned) > 0
+    mask = np.stack([mask[:,:,0] | mask[:,:,1] | mask[:,:,2]] * 3, axis=-1)
+
+    if "blur1" in unalign_dict:
+      unaligned -= unalign_dict["blur2"]
+      unaligned -= unalign_dict["blur1"]
+      pad = unalign_dict["pad"]
+      unaligned = PIL.Image.fromarray(np.uint8(np.clip(np.rint(unaligned), 0, 255)), 'RGB').crop([pad[1], pad[0],  unaligned.shape[1] - pad[3], unaligned.shape[0] - pad[2]])
+      mask = mask[pad[0]:mask.shape[0]-pad[1], pad[2]:mask.shape[1]-pad[3]]
+
+    img_orig = PIL.Image.open(orig_img_pth).convert("RGB")
+
+    if "crop" in unalign_dict:
+      crop = unalign_dict["crop"]
+      unaligned = np.pad(np.float32(unaligned), ((crop[1], img_orig.size[1] - crop[3]), (crop[0], img_orig.size[0] - crop[2]), (0, 0)))
+      mask = np.pad(np.float32(mask), ((crop[1], img_orig.size[1] - crop[3]), (crop[0], img_orig.size[0] - crop[2]), (0, 0)))
+      unaligned = PIL.Image.fromarray(np.uint8(np.clip(np.rint(unaligned), 0, 255)), 'RGB')
+
+    if "shrink" in unalign_dict:
+      unaligned = unaligned.resize(unalign_dict["shrink"])
+      mask = mask.resize(unalign_dict["shrink"])
+
+    unaligned = np.asarray(img_orig) * (1 - mask / mask.max()) + np.asarray(unaligned) * mask / mask.max()
+    PIL.Image.fromarray(unaligned.astype('uint8'), 'RGB').save("edited.png")
+    PIL.Image.fromarray(np.uint8(np.clip(np.rint((1 - mask) * 255), 0, 255)), 'RGB').save("mask.jpg")
+
+    subprocess.run(
+            ["fpie", "-s", orig_img_pth, "-m", "mask.jpg", "-t", "edited.png", "-o", unaligned_path, "-n",
+             "5000", "-b", "taichi-gpu", "-g", "src"],
+            check=True
+        )
 
 
 class SimpleRunner:
@@ -101,17 +144,18 @@ class SimpleRunner:
         save_pth = Path(save_pth)
         save_pth_dir = save_pth.parents[0]
         save_pth_dir.mkdir(parents=True, exist_ok=True)
+        aligned_image_pth = orig_img_pth
 
         if align:
-            aligned_image = run_alignment(orig_img_pth)
+            aligned_image, unalign_dict = run_alignment(orig_img_pth)
             save_align_pth = save_pth.parents[0] / (save_pth.stem + "_aligned.jpg")
             print(f"Save aligned image to {save_align_pth}")
             aligned_image.convert('RGB').save(save_align_pth)
-            orig_img_pth = save_align_pth
+            aligned_image_pth = save_align_pth
 
         if use_mask and mask_path is None:
             print("Prepearing mask")
-            mask_path = extract_mask(orig_img_pth, save_pth.parents[0], trash=mask_trashold)
+            mask_path = extract_mask(aligned_image_pth, save_pth.parents[0], trash=mask_trashold)
             print("Done")
 
         if use_mask and mask_path is not None:
@@ -122,7 +166,7 @@ class SimpleRunner:
         else:
             mask = None
 
-        orig_img = Image.open(orig_img_pth).convert("RGB")
+        orig_img = Image.open(aligned_image_pth).convert("RGB")
         transform_dict = transforms_registry["face_1024"]().get_transforms()
         orig_img = transform_dict["test"](orig_img).unsqueeze(0)
 
@@ -154,6 +198,11 @@ class SimpleRunner:
 
         edited_image = tensor2im(edited_image[0][0].cpu())
         edited_image.save(save_pth)
+
+        if align:
+            unaligned_path = save_pth.parents[0] / (save_pth.stem + "_unaligned.jpg")
+            unalign(edited_image, unalign_dict, orig_img_pth, unaligned_path)
+
         return edited_image
 
     def available_editings(self):
