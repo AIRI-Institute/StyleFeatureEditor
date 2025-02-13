@@ -271,7 +271,7 @@ class BaseTrainingRunner(BaseRunner):
                 print("Start training with discriminator")
             if self.train_dataloader.batch_size != self.config.model.batch_size:
                 print(f"Changing batch size from {self.train_dataloader.batch_size} to {self.config.model.batch_size}")
-                self.setup_dataloaders(self.config.model.batch_size)
+                self._setup_dataloaders(self.config.model.batch_size)
 
             toogle_grad(self.method.discriminator, True)
             self.method.discriminator.train()
